@@ -1,8 +1,17 @@
+import { Route, Routes } from 'react-router-dom';
+import MainLayout from './layout';
+import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
+
 function App() {
   return (
-    <div>
-      <p className="text-5xl">Hello World</p>
-    </div>
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<HomePage />} />
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 
