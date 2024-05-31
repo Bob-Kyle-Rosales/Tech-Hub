@@ -1,0 +1,28 @@
+.Slider {
+  font-family: sans-serif;
+  padding: 10px 30px;
+}
+
+.Slider > div {
+  background-color: #5c2e91;
+  background-color: #fff;
+  color: #fff;
+  color: black;
+  text-align: center;
+}
+
+.slick-prev:before {
+  color: black !important;
+}
+.slick-next:before {
+  color: black !important;
+}
+
+.slide-title {
+  font-size: 20px;
+}
+
+.slide-image {
+  height: 18rem;
+  margin-bottom: 10px;
+}
