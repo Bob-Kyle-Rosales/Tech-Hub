@@ -1,12 +1,14 @@
-import React from 'react';
-import { Button, TextField } from '@mui/material';
-import { AuthError } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { RegisterSchema } from '../../models/User';
-import supabase from '../../config/supabaseClient';
+
+import { Button, TextField } from '@mui/material';
+
+import Swal from 'sweetalert2';
 import Card from '../../components/Card';
 
-// Define interface for form data
+import { RegisterSchema } from '../../models/User';
+import supabase from '../../config/supabaseClient';
+
 interface FormData {
   credentials: {
     email: string;
@@ -22,6 +24,7 @@ interface FormData {
 }
 
 function Register() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -43,11 +46,9 @@ function Register() {
         throw new Error(error.message);
       }
 
-      console.log('User registered successfully:', data.user);
-
       // Now that the user is registered, insert the profile information into the Profile table
       const profileData = {
-        id: data.user?.id || '', // Ensure id is populated with a string value
+        id: data.user?.id,
         first_name: formData.profile.first_name,
         last_name: formData.profile.last_name,
         phone: formData.profile.phone,
@@ -63,11 +64,17 @@ function Register() {
         throw new Error(profileError.message);
       }
 
-      console.log('Profile created successfully:', profile);
-      // Handle further actions like redirecting to a new page
+      // making sure there is profile
+      if (profile) {
+        navigate('/login');
+      }
     } catch (error) {
-      const customError = error as AuthError | null;
-      console.error('Registration error:', customError?.message);
+      Swal.fire({
+        title: 'Registration Error!',
+        text: 'There seems to be an error. Come back later',
+        icon: 'error',
+        confirmButtonText: 'Okay',
+      });
     }
   };
 
@@ -88,7 +95,9 @@ function Register() {
                 }}
               />
               {errors?.profile?.first_name && (
-                <span className="error">First Name is required</span>
+                <span className="text-red-400 text-xs">
+                  First Name is required
+                </span>
               )}
             </div>
             <div className="flex-1">
@@ -102,7 +111,9 @@ function Register() {
                 }}
               />
               {errors?.profile?.last_name && (
-                <span className="error">Last Name is required</span>
+                <span className="text-red-400 text-xs">
+                  Last Name is required
+                </span>
               )}
             </div>
           </div>
@@ -113,8 +124,11 @@ function Register() {
             type="text"
             fullWidth
             margin="normal"
-            inputProps={{ ...register('profile.phone') }}
+            inputProps={{ ...register('profile.phone', { required: true }) }}
           />
+          {errors?.profile?.phone && (
+            <span className="text-red-400 text-xs">Phone no is required</span>
+          )}
 
           <TextField
             label="Address"
@@ -122,8 +136,11 @@ function Register() {
             type="text"
             fullWidth
             margin="normal"
-            inputProps={{ ...register('profile.address') }}
+            inputProps={{ ...register('profile.address', { required: true }) }}
           />
+          {errors?.profile?.address && (
+            <span className="text-red-400 text-xs">Address is required</span>
+          )}
 
           <TextField
             label="Email"
@@ -136,7 +153,7 @@ function Register() {
             }}
           />
           {errors?.credentials?.email && (
-            <span className="error">Email is required</span>
+            <span className="text-red-400 text-xs">Email is required</span>
           )}
           <TextField
             label="Password"
@@ -149,8 +166,9 @@ function Register() {
             }}
           />
           {errors?.credentials?.password && (
-            <span className="error">Password is required</span>
+            <span className="text-red-400 text-xs">Password is required</span>
           )}
+
           <Button type="submit" variant="contained">
             Register
           </Button>
