@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, MouseEvent } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { IoMdMenu } from 'react-icons/io';
+import { styled } from '@mui/material/styles';
 import {
   AppBar,
   Toolbar,
@@ -9,51 +11,77 @@ import {
   Drawer,
   IconButton,
   Button,
+  Menu,
+  MenuItem,
 } from '@mui/material';
-import { IoMdMenu } from 'react-icons/io';
+import Badge, { BadgeProps } from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+import useCart from '../../hooks/useCart';
+import useUserStore from '../../hooks/useUser';
+
 import logo from '../../assets/logo.png';
+import './NavBar.css';
+
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 function NavBar() {
+  const { cart } = useCart();
+  const { user } = useUserStore();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
+    setDrawerOpen((prev) => !prev);
   };
 
   const handleCloseDrawer = () => {
     setDrawerOpen(false);
   };
 
-  const linkStyle = {
-    color: 'black',
-    textDecoration: 'none',
-    padding: '4px 16px',
-    borderBottom: 'none',
+  const handleAccountClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (user) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      navigate('/login');
+    }
   };
 
-  const activeLinkStyle = {
-    ...linkStyle,
-    borderTop: '3.5px solid rgb(25, 181, 254)',
-    borderRadius: '2px',
+  const handleAccountClose = () => {
+    setAnchorEl(null);
   };
 
   const renderNavLinks = () => (
     <>
-      <NavLink to="/login">
-        <Button color="inherit" onClick={handleCloseDrawer}>
-          <AccountCircleIcon style={{ color: 'black' }} />
-        </Button>
-      </NavLink>
-      <NavLink to="/cart">
-        <Button color="inherit" onClick={handleCloseDrawer}>
-          <ShoppingCartIcon style={{ color: 'black' }} />
-        </Button>
+      <IconButton aria-label="account" onClick={handleAccountClick}>
+        <AccountCircleIcon style={{ color: 'black' }} />
+      </IconButton>
+      <NavLink to="/cart" onClick={handleCloseDrawer}>
+        <IconButton aria-label="cart">
+          <StyledBadge badgeContent={cart.length} color="secondary">
+            <ShoppingCartIcon style={{ color: 'black' }} />
+          </StyledBadge>
+        </IconButton>
       </NavLink>
     </>
+  );
+
+  const renderDesktopNavLinks = () => (
+    <Box sx={{ marginLeft: 'auto', display: { xs: 'none', md: 'flex' } }}>
+      {renderNavLinks()}
+    </Box>
   );
 
   const renderMobileNavLinks = () => (
@@ -82,9 +110,60 @@ function NavBar() {
     </>
   );
 
+  const renderSubNavLinks = () => (
+    <>
+      <NavLink
+        to="/"
+        className={({ isActive }) => (isActive ? 'activeNavLink' : 'navLink')}
+      >
+        <Button color="inherit" onClick={handleCloseDrawer}>
+          Home
+        </Button>
+      </NavLink>
+      <NavLink
+        to="/iphone"
+        className={({ isActive }) => (isActive ? 'activeNavLink' : 'navLink')}
+      >
+        <Button color="inherit" onClick={handleCloseDrawer}>
+          iPhone
+        </Button>
+      </NavLink>
+      <NavLink
+        to="/ipad"
+        className={({ isActive }) => (isActive ? 'activeNavLink' : 'navLink')}
+      >
+        <Button color="inherit" onClick={handleCloseDrawer}>
+          iPad
+        </Button>
+      </NavLink>
+      <NavLink
+        to="/mac"
+        className={({ isActive }) => (isActive ? 'activeNavLink' : 'navLink')}
+      >
+        <Button color="inherit" onClick={handleCloseDrawer}>
+          Mac
+        </Button>
+      </NavLink>
+    </>
+  );
+
+  const accountMenu = (
+    <Menu
+      id="account-menu"
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl)}
+      onClose={handleAccountClose}
+      style={{
+        marginLeft: '-40px', // Move the menu to the left
+      }}
+    >
+      <MenuItem onClick={handleAccountClose}>Profile</MenuItem>
+      <MenuItem onClick={handleAccountClose}>Logout</MenuItem>
+    </Menu>
+  );
+
   return (
     <>
-      {/* Main Nav Bar */}
       <AppBar
         position="static"
         sx={{
@@ -109,14 +188,10 @@ function NavBar() {
               style={{ height: 96, width: 'auto', marginRight: '16px' }}
             />
           </NavLink>
-          <Box sx={{ marginLeft: 'auto', display: { xs: 'none', md: 'flex' } }}>
-            {renderNavLinks()}
-          </Box>
-          {isMobile && renderMobileNavLinks()}
+          {isMobile ? renderMobileNavLinks() : renderDesktopNavLinks()}
         </Toolbar>
       </AppBar>
 
-      {/* Sub Nav Bar */}
       <AppBar
         position="static"
         sx={{
@@ -127,42 +202,12 @@ function NavBar() {
       >
         <Toolbar sx={{ minHeight: { xs: '38px', sm: '38px' } }}>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <NavLink
-              to="/"
-              style={({ isActive }) => (isActive ? activeLinkStyle : linkStyle)}
-            >
-              <Button color="inherit" onClick={handleCloseDrawer}>
-                Home
-              </Button>
-            </NavLink>
-            <NavLink
-              to="/iphone"
-              style={({ isActive }) => (isActive ? activeLinkStyle : linkStyle)}
-            >
-              <Button color="inherit" onClick={handleCloseDrawer}>
-                iPhone
-              </Button>
-            </NavLink>
-            <NavLink
-              to="/ipad"
-              style={({ isActive }) => (isActive ? activeLinkStyle : linkStyle)}
-            >
-              <Button color="inherit" onClick={handleCloseDrawer}>
-                Ipad
-              </Button>
-            </NavLink>
-            <NavLink
-              to="/mac"
-              style={({ isActive }) => (isActive ? activeLinkStyle : linkStyle)}
-            >
-              <Button color="inherit" onClick={handleCloseDrawer}>
-                Mac
-              </Button>
-            </NavLink>
+            {renderSubNavLinks()}
           </Box>
-          {/* {isMobile && renderMobileNavLinks()} */}
         </Toolbar>
       </AppBar>
+
+      {accountMenu}
     </>
   );
 }

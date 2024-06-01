@@ -1,0 +1,14 @@
+.navLink {
+  color: black;
+  text-decoration: none;
+  padding: 4px 16px;
+  border-bottom: none;
+}
+
+.activeNavLink {
+  color: black;
+  text-decoration: none;
+  padding: 4px 16px;
+  border-top: 3.5px solid rgb(25, 181, 254);
+  border-radius: 2px;
+}
