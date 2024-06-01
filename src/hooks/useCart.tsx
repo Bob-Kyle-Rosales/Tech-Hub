@@ -1,81 +1,115 @@
 import { create } from 'zustand';
 import Swal from 'sweetalert2';
-import { UserState, CartState, Product } from '../interface/types';
+import { CartState, Product, UserLogin } from '../interface/types';
 import OrderService from '../services/OrderService'; // Import the OrderService
 
-const useCart = create<CartState>((set) => ({
-  cart: [],
-  addCart: async (newProduct: Product, userState: UserState) => {
-    try {
-      set((state) => {
-        // Check if the product already exists in the cart
-        const existingProductIndex = state.cart.findIndex(
-          (product) =>
-            product.id === newProduct.id &&
-            product.color === newProduct.color &&
-            product.storage === newProduct.storage,
-        );
+const useCart = create<CartState>((set) => {
+  // Retrieve cart state from local storage on initialization
+  const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-        if (existingProductIndex > -1) {
-          // If the product exists, update its quantity
-          const updatedCart = state.cart.map((product, index) => {
-            if (index === existingProductIndex) {
-              return {
-                ...product,
-                quantity: product.quantity + newProduct.quantity,
-              };
-            }
-            return product;
-          });
+  return {
+    cart: storedCart,
+    addCart: async (newProduct: Product, userState: UserLogin) => {
+      try {
+        set((state) => {
+          // Check if the product already exists in the cart
+          const existingProductIndex = state.cart.findIndex(
+            (product) =>
+              product.id === newProduct.id &&
+              product.color === newProduct.color &&
+              product.storage === newProduct.storage,
+          );
 
-          // Update the cart in the store
+          if (existingProductIndex > -1) {
+            // If the product exists, update its quantity
+            const updatedCart = state.cart.map((product, index) => {
+              if (index === existingProductIndex) {
+                return {
+                  ...product,
+                  quantity: product.quantity + newProduct.quantity,
+                };
+              }
+              return product;
+            });
+
+            // Update the cart in the store and local storage
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            return { cart: updatedCart };
+          }
+          // If the product doesn't exist, add it to the cart
+          const updatedCart = [...state.cart, newProduct];
+          // Update the cart in the store and local storage
+          localStorage.setItem('cart', JSON.stringify(updatedCart));
           return { cart: updatedCart };
-        }
-        // If the product doesn't exist, add it to the cart
-        return { cart: [...state.cart, newProduct] };
-      });
+        });
 
-      // Create or update the order in the database
-      await OrderService.createOrder(
-        userState.user?.id || '',
-        JSON.stringify(newProduct),
-        'Added',
-      );
-    } catch (error) {
-      Swal.fire({
-        title: 'Add Cart Error!',
-        text: 'Error adding product to cart. Please come back later',
-        icon: 'error',
-        confirmButtonText: 'Confirm',
-      });
-    }
-  },
-  removeCart: async (productId) => {
-    try {
-      set((state) => ({
-        // Remove the product from the cart in the store
-        cart: state.cart.filter((product) => product.id !== productId),
-      }));
+        // Create or update the order in the database
+        await OrderService.createOrder(
+          userState.id || '',
+          JSON.stringify(newProduct),
+          'Added',
+        );
+      } catch (error) {
+        Swal.fire({
+          title: 'Add Cart Error!',
+          text: 'Error adding product to cart. Please come back later',
+          icon: 'error',
+          confirmButtonText: 'Confirm',
+        });
+      }
+    },
+    removeCart: async (productRem) => {
+      try {
+        set((state) => {
+          // Remove the product from the cart in the store
+          const updatedCart = state.cart.filter(
+            (product) => product.id !== productRem.id,
+          );
+          // Update the cart in the store and local storage
+          localStorage.setItem('cart', JSON.stringify(updatedCart));
+          return { cart: updatedCart };
+        });
 
-      // Delete the order from the database
-      await OrderService.deleteOrder(productId);
-    } catch (error) {
-      console.error('Error removing product from cart:', error.message);
-    }
-  },
-  clearCart: async () => {
-    try {
-      set(() => ({
-        // Clear the cart in the store
-        cart: [],
-      }));
+        // Delete the order from the database
+        await OrderService.deleteOrder(productRem.orderid);
+      } catch (error) {
+        Swal.fire({
+          title: 'Remove Cart Error!',
+          text: 'Error removing product from cart. Please come back later',
+          icon: 'error',
+          confirmButtonText: 'Confirm',
+        });
+      }
+    },
+    initializeCart: async (userId: string) => {
+      try {
+        // Fetch the cart data for the user from the database
+        const orders = await OrderService.getOrdersByUserId(userId);
 
-      // Clear all orders from the database
-      await OrderService.clearOrders();
-    } catch (error) {
-      console.error('Error clearing cart:', error.message);
-    }
-  },
-}));
+        // Extract product data from orders and set the cart state
+        const cartData = orders.map((order) => {
+          const product: Product = JSON.parse(order.product);
+          product.orderid = order.id;
+          return product;
+        });
+
+        // Update the cart in the store and local storage
+        localStorage.setItem('cart', JSON.stringify(cartData));
+        set({ cart: cartData });
+      } catch (error) {
+        Swal.fire({
+          title: 'User Cart Error!',
+          text: 'Error initializing cart. Please come back later',
+          icon: 'error',
+          confirmButtonText: 'Confirm',
+        });
+      }
+    },
+    clearCart: () => {
+      localStorage.removeItem('cart');
+      set({ cart: [] });
+    },
+  };
+});
 
 export default useCart;
