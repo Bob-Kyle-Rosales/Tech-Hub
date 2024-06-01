@@ -3,20 +3,9 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './styles.css';
 import { NavLink } from 'react-router-dom';
+import { DeviceListProps } from '../../interface/types';
 import MyButton from '../Button';
 import Card from '../Card';
-
-interface Device {
-  id: string;
-  title: string;
-  type: string;
-  thumb: string;
-  price: number;
-}
-
-interface DeviceListProps {
-  devices: Device[];
-}
 
 function DeviceList({ devices }: DeviceListProps): JSX.Element {
   const renderSlides = (): JSX.Element[] =>
