@@ -8,12 +8,15 @@ import DevicePage from './pages/DevicePage';
 import NotFoundPage from './pages/NotFoundPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import CartPage from './pages/CartPage';
+import ProfilePage from './pages/Profile';
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
+
         <Route path="ipad">
           <Route index element={<IpadPage />} />
           <Route path=":id" element={<DevicePage device="iPad" />} />
@@ -29,6 +32,10 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<ProfilePage />} />
+
+        <Route path="/cart" element={<CartPage />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
