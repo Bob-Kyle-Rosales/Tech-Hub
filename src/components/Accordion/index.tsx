@@ -1,4 +1,5 @@
-import { ReactNode, useState } from 'react';
+import { useState, ReactNode } from 'react';
+import PropTypes from 'prop-types';
 import {
   Accordion,
   AccordionSummary,
@@ -7,13 +8,12 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-function CustomAccordion({
-  title,
-  children,
-}: {
+interface CustomAccordionProps {
   title: string;
   children: ReactNode;
-}) {
+}
+
+function CustomAccordion({ title, children }: CustomAccordionProps) {
   const [expanded, setExpanded] = useState(false);
 
   const handleAccordionChange = () => {
@@ -45,7 +45,7 @@ function CustomAccordion({
       </AccordionSummary>
       <AccordionDetails
         sx={{
-          padding: '00px 16px 16px',
+          padding: '0px 16px 16px',
         }}
       >
         {children}
@@ -53,5 +53,10 @@ function CustomAccordion({
     </Accordion>
   );
 }
+
+CustomAccordion.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export default CustomAccordion;

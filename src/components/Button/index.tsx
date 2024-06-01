@@ -43,12 +43,11 @@ function MyButton({
   );
 }
 
-// Default Props
 MyButton.defaultProps = {
   variant: 'contained',
   color: 'inherit',
-  backgroundColor: 'transparent', // Default background color
-  style: {}, // Default empty style object
+  backgroundColor: 'transparent',
+  style: {},
 };
 
 export default MyButton;

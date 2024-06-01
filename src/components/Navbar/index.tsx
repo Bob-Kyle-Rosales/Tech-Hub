@@ -69,10 +69,10 @@ function NavBar() {
   };
 
   const handleLogout = () => {
-    logout(); // Calling the logout action
+    logout();
     clearCart();
-    setAnchorEl(null); // Close the account menu
-    navigate('/'); // Redirect to home page
+    setAnchorEl(null);
+    navigate('/');
   };
 
   const renderNavLinks = () => (
@@ -94,32 +94,6 @@ function NavBar() {
     <Box sx={{ marginLeft: 'auto', display: { xs: 'none', md: 'flex' } }}>
       {renderNavLinks()}
     </Box>
-  );
-
-  const renderMobileNavLinks = () => (
-    <>
-      <IconButton
-        size="large"
-        edge="start"
-        aria-label="menu"
-        sx={{ ml: 'auto' }}
-        onClick={handleDrawerToggle}
-      >
-        <IoMdMenu />
-      </IconButton>
-      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
-        <Box
-          sx={{
-            p: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-          }}
-        >
-          {renderNavLinks()}
-        </Box>
-      </Drawer>
-    </>
   );
 
   const renderSubNavLinks = () => (
@@ -156,6 +130,35 @@ function NavBar() {
           Mac
         </Button>
       </NavLink>
+    </>
+  );
+
+  const renderMobileNavLinks = () => (
+    <>
+      <IconButton
+        size="large"
+        edge="start"
+        aria-label="menu"
+        sx={{ ml: 'auto' }}
+        onClick={handleDrawerToggle}
+      >
+        <IoMdMenu />
+      </IconButton>
+      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
+        <Box
+          sx={{
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          {renderNavLinks()}
+          {renderSubNavLinks()}
+        </Box>
+      </Drawer>
     </>
   );
 

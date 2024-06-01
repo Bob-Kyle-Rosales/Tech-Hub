@@ -17,15 +17,19 @@ function HomePage() {
         <Card className="w-1/3  p-0 relative">
           <img src={person_mac} alt="img" className="w-full rounded-lg" />
           <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center">
-            <h1 className="text-7xl font-bold mb-2">College Students</h1>
-            <h2 className="text-xl font-bold">Mac and iPad. Go further</h2>
+            <h1 className="font-bold mb-2 sm:text-xl md:text-5xl lg:text-7xl">
+              College Students
+            </h1>
+            <h2 className=" font-bold sm:text-lg md:text-lg lg:text-xl">
+              Mac and iPad. Go further
+            </h2>
           </div>
         </Card>
 
         <Card className="w-1/3  p-0 relative">
           <img src={person2} alt="img" className="w-full rounded-lg" />
           <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center">
-            <h1 className="text-7xl font-bold mb-2">
+            <h1 className="font-bold mb-2 sm:text-xl md:text-5xl lg:text-7xl">
               Explore <br /> Limited <br /> Editions
             </h1>
           </div>
@@ -34,7 +38,7 @@ function HomePage() {
         <Card className="w-1/3  p-0 relative">
           <img src={headphone} alt="img" className="w-full rounded-lg" />
           <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center">
-            <h1 className="text-7xl font-bold mb-2">
+            <h1 className="font-bold mb-2 sm:text-xl md:text-5xl lg:text-7xl">
               Shop <br /> Triple <br /> Threat
             </h1>
           </div>
@@ -52,16 +56,20 @@ function HomePage() {
             <img src={iPhone} alt="img" className="w-full rounded-lg" />
             <NavLink to="/iphone">
               <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center hover:opacity-90 cursor-pointer">
-                <h1 className="text-5xl font-bold mb-2">iPhone</h1>
+                <h1 className="font-bold mb-2 sm:text-3xl md:text-3xl lg:text-5xl">
+                  iPhone
+                </h1>
               </div>
             </NavLink>
           </Card>
 
           <Card className="w-1/3 h-96 p-0 relative overflow-hidden transition duration-300 ease-in-out transform hover:scale-105">
-            <img src={iPad} alt="img" className="w-full rounded-lg" />
+            <img src={iPad} alt="img" className="w-full h-auto rounded-lg" />
             <NavLink to="/ipad">
               <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center hover:opacity-90 cursor-pointer">
-                <h1 className="text-5xl font-bold mb-2">iPad</h1>
+                <h1 className="font-bold mb-2 sm:text-3xl md:text-3xl lg:text-5xl">
+                  iPad
+                </h1>
               </div>
             </NavLink>
           </Card>
@@ -70,7 +78,9 @@ function HomePage() {
             <img src={MacBook} alt="img" className="w-full rounded-lg" />
             <NavLink to="/mac">
               <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-white text-center hover:opacity-90 cursor-pointer">
-                <h1 className="text-5xl font-bold mb-2">MacBook</h1>
+                <h1 className="font-bold mb-2 sm:text-3xl md:text-3xl lg:text-5xl">
+                  MacBook
+                </h1>
               </div>
             </NavLink>
           </Card>

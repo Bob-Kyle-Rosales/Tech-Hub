@@ -9,7 +9,6 @@ const ProfileService = {
       .insert(profile)
       .select();
     if (error) {
-      console.error(`Error creating profile: ${error.message}`);
       throw new Error(`Error creating profile: ${error.message}`);
     }
     return data ? data[0] : null;
@@ -23,7 +22,6 @@ const ProfileService = {
       .eq('id', id)
       .single();
     if (error) {
-      console.error(`Error fetching profile: ${error.message}`);
       throw new Error(`Error fetching profile: ${error.message}`);
     }
     return data || null;
@@ -35,9 +33,8 @@ const ProfileService = {
       .from('Profile')
       .update(updates)
       .eq('id', id)
-      .select(); // Ensure the updated data including id is returned
+      .select();
     if (error) {
-      console.error(`Error updating profile: ${error.message}`);
       throw new Error(`Error updating profile: ${error.message}`);
     }
     return data ? data[0] : null;
@@ -47,7 +44,6 @@ const ProfileService = {
   deleteProfile: async (id: string) => {
     const { error } = await supabase.from('Profile').delete().eq('id', id);
     if (error) {
-      console.error(`Error deleting profile: ${error.message}`);
       throw new Error(`Error deleting profile: ${error.message}`);
     }
     return true;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './IncrementDecrementBtn.css';
 
 function IncrementDecrementBtn({
@@ -6,14 +7,14 @@ function IncrementDecrementBtn({
   maxValue = 100,
   onChange,
 }: {
-  minValue: number;
-  maxValue: number;
-  onChange: (value: number) => void; // onChange prop type
+  minValue?: number;
+  maxValue?: number;
+  onChange: (value: number) => void;
 }) {
   const [count, setCount] = useState(minValue);
 
   useEffect(() => {
-    onChange(count); // Call the onChange callback whenever count changes
+    onChange(count);
   }, [count, onChange]);
 
   const handleIncrementCounter = () => {
@@ -50,5 +51,16 @@ function IncrementDecrementBtn({
     </div>
   );
 }
+
+IncrementDecrementBtn.propTypes = {
+  minValue: PropTypes.number,
+  maxValue: PropTypes.number,
+  onChange: PropTypes.func.isRequired,
+};
+
+IncrementDecrementBtn.defaultProps = {
+  minValue: 0,
+  maxValue: 100,
+};
 
 export default IncrementDecrementBtn;

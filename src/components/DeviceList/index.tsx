@@ -1,15 +1,16 @@
+import PropTypes from 'prop-types';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './styles.css';
 import { NavLink } from 'react-router-dom';
-import { DeviceListProps } from '../../interface/types';
 import MyButton from '../Button';
 import Card from '../Card';
+import { DeviceListProps, Device } from '../../interface/types';
 
 function DeviceList({ devices }: DeviceListProps): JSX.Element {
   const renderSlides = (): JSX.Element[] =>
-    devices.map((device) => (
+    devices.map((device: Device) => (
       <div key={device.id}>
         <Card className="flex-col justify-center items-center hover:opacity-90 cursor-pointer">
           <NavLink to={`/${device.type}/${device.id}`}>
@@ -52,5 +53,17 @@ function DeviceList({ devices }: DeviceListProps): JSX.Element {
     </div>
   );
 }
+
+DeviceList.propTypes = {
+  devices: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      thumb: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+};
 
 export default DeviceList;

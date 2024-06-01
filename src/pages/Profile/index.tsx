@@ -1,12 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import Card from '../../components/Card';
+
+import { User } from '../../interface/types';
 import { useProfileById, useUpdateProfile } from '../../hooks/useProfile';
 import useUserStore from '../../hooks/useUser';
-import Card from '../../components/Card';
-import { User } from '../../interface/types';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -17,13 +19,11 @@ function ProfilePage() {
     user?.id || '',
   );
 
-  // Mutation hook for updating profile
   const { mutate: updateProfile, isLoading: updateLoading } =
     useUpdateProfile();
 
-  // Initialize React Hook Form
   const { register, handleSubmit } = useForm({
-    defaultValues: profileData || {}, // Set default values if profile data is available
+    defaultValues: profileData || {},
   });
 
   // Function to handle form submission
@@ -55,7 +55,10 @@ function ProfilePage() {
         {profileLoading ? (
           <p>Loading profile...</p>
         ) : (
-          <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="w-full flex flex-col justify-center"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <TextField
               fullWidth
               label="First Name"
@@ -88,14 +91,17 @@ function ProfilePage() {
               className="mb-4"
               inputProps={{ ...register('address') }}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={updateLoading}
-            >
-              {updateLoading ? 'Saving...' : 'Save'}
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={updateLoading}
+                className="w-1/3"
+              >
+                Save
+              </Button>
+            </div>
           </form>
         )}
       </Card>
