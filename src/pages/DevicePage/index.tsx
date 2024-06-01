@@ -1,13 +1,26 @@
-import { useParams, useNavigate, NavLink } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import useDeviceById from '../../hooks/useDeviceById';
+
+import Swal from 'sweetalert2';
 import MyButton from '../../components/Button';
 import IncrementDecrementBtn from '../../components/IncDecButton';
 import CustomAccordion from '../../components/Accordion';
 
+import useDeviceById from '../../hooks/useDeviceById';
+import useCart from '../../hooks/useCart';
+import useUserStore from '../../hooks/useUser';
+
+import { Product } from '../../interface/types';
+
 function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
   const { id } = useParams<{ id?: string }>();
   const { data, isLoading, error } = useDeviceById(device, id || '');
+
+  // Access the first (and only) object in the array
+  const deviceData = data?.[0];
+
+  const { addCart } = useCart();
+  const { user } = useUserStore();
   const navigate = useNavigate();
 
   const [selectedColor, setSelectedColor] = useState<string>('');
@@ -32,9 +45,6 @@ function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
     return null;
   }
 
-  // Access the first (and only) object in the array
-  const deviceData = data?.[0];
-
   // Processing data from db
   const getGallery = () => {
     if (!data || data.length === 0) return null;
@@ -52,12 +62,13 @@ function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
     return processorArray;
   };
 
-  // Processing data from db
-
   // Render
   const renderColors = () => {
     const validJSONString = deviceData.color.replace(/'/g, '"');
     const colorsArray = JSON.parse(validJSONString);
+    if (selectedColor === '') {
+      setSelectedColor(colorsArray[0]);
+    }
 
     return (
       <div>
@@ -83,6 +94,9 @@ function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
 
     const validJSONString = data[0].storage.replace(/'/g, '"');
     const storageArray = JSON.parse(validJSONString);
+    if (!selectedStorage) {
+      setSelectedStorage(storageArray[0]);
+    }
 
     return (
       <div>
@@ -125,6 +139,41 @@ function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
         </p>
       </div>
     );
+  };
+
+  // add cart
+  const handleAddProduct = () => {
+    // selects default if none picked:
+    // add_price=0, size=256GB
+    const total =
+      (parseInt(deviceData.price, 10) +
+        parseInt(selectedStorage?.add_price || '0', 10)) *
+      quantity;
+
+    const product: Product = {
+      id: deviceData.id,
+      orderid: 0,
+      name: deviceData.title,
+      thumbnail: deviceData.thumb,
+      color: selectedColor,
+      storage: selectedStorage?.size || '256GB',
+      quantity,
+      price: total,
+    };
+
+    if (user) {
+      addCart(product, user);
+      Swal.fire({
+        title: 'Added to Cart',
+        text: 'Check your cart to finalize!',
+        icon: 'success',
+        confirmButtonText: 'Confirm',
+      }).then(() => {
+        navigate('/');
+      });
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -184,28 +233,27 @@ function DevicePage({ device }: { device: 'iPad' | 'iPhone' | 'Mac' }) {
           <p className="my-8 text-4xl font-medium">Quantity</p>
           <div className="border-2 inline-block">
             <IncrementDecrementBtn
-              minValue={0}
-              maxValue={25}
+              minValue={1}
+              maxValue={10}
               onChange={(value) => setQuantity(value)}
             />
           </div>
 
           <div className="my-8">
-            <NavLink to="/cart">
-              <MyButton
-                variant="contained"
-                style={{
-                  backgroundColor: '#0071E3',
-                  color: 'white',
-                  borderRadius: '20px',
-                  marginTop: '20px',
-                  width: '10rem',
-                  height: '3rem',
-                }}
-              >
-                Add to cart
-              </MyButton>
-            </NavLink>
+            <MyButton
+              variant="contained"
+              style={{
+                backgroundColor: '#0071E3',
+                color: 'white',
+                borderRadius: '20px',
+                marginTop: '20px',
+                width: '10rem',
+                height: '3rem',
+              }}
+              onClick={handleAddProduct}
+            >
+              Add to cart
+            </MyButton>
           </div>
         </div>
       </div>

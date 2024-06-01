@@ -22,18 +22,18 @@ function DeviceList({ devices }: DeviceListProps): JSX.Element {
               <h3 className="slide-title">{device.title}</h3>
               <p className="slide-price">${device.price}</p>
             </div>
+            <MyButton
+              variant="contained"
+              style={{
+                backgroundColor: '#0071E3',
+                color: 'white',
+                borderRadius: '10px',
+                marginTop: '20px',
+              }}
+            >
+              Learn More
+            </MyButton>
           </NavLink>
-          <MyButton
-            variant="contained"
-            style={{
-              backgroundColor: '#0071E3',
-              color: 'white',
-              borderRadius: '10px',
-              marginTop: '20px',
-            }}
-          >
-            Learn More
-          </MyButton>
         </Card>
       </div>
     ));
