@@ -34,8 +34,8 @@ const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
 }));
 
 function NavBar() {
-  const { cart } = useCart();
-  const { user } = useUserStore();
+  const { cart, clearCart } = useCart();
+  const { user, logout } = useUserStore();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -63,12 +63,24 @@ function NavBar() {
     setAnchorEl(null);
   };
 
+  const handleProfile = () => {
+    navigate('/profile');
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout(); // Calling the logout action
+    clearCart();
+    setAnchorEl(null); // Close the account menu
+    navigate('/'); // Redirect to home page
+  };
+
   const renderNavLinks = () => (
     <>
       <IconButton aria-label="account" onClick={handleAccountClick}>
         <AccountCircleIcon style={{ color: 'black' }} />
       </IconButton>
-      <NavLink to="/cart" onClick={handleCloseDrawer}>
+      <NavLink to={user ? '/cart' : '/login'} onClick={handleCloseDrawer}>
         <IconButton aria-label="cart">
           <StyledBadge badgeContent={cart.length} color="secondary">
             <ShoppingCartIcon style={{ color: 'black' }} />
@@ -157,8 +169,8 @@ function NavBar() {
         marginLeft: '-40px', // Move the menu to the left
       }}
     >
-      <MenuItem onClick={handleAccountClose}>Profile</MenuItem>
-      <MenuItem onClick={handleAccountClose}>Logout</MenuItem>
+      <MenuItem onClick={handleProfile}>Profile</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
