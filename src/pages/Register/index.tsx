@@ -79,8 +79,8 @@ function Register() {
   };
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
-      <Card className="flex-col items-center p-8 border border-gray-300 shadow-md w-1/3">
+    <div className="w-screen mt-40 flex justify-center items-center">
+      <Card className="flex-col items-center p-4 border border-gray-300 shadow-md w-1/3">
         <p className="text-xl font-medium">Registration</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex">
@@ -169,9 +169,11 @@ function Register() {
             <span className="text-red-400 text-xs">Password is required</span>
           )}
 
-          <Button type="submit" variant="contained">
-            Register
-          </Button>
+          <div className="flex justify-center">
+            <Button type="submit" variant="contained">
+              Register
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

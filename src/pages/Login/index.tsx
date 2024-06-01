@@ -10,6 +10,7 @@ import supabase from '../../config/supabaseClient';
 import useUserStore from '../../hooks/useUser';
 import { UserCredentialsSchema } from '../../models/User';
 import { UserLogin } from '../../interface/types';
+import useCart from '../../hooks/useCart';
 
 // Define interface for form data
 interface FormData {
@@ -27,6 +28,7 @@ function LoginForm() {
   });
 
   const { login } = useUserStore();
+  const { initializeCart } = useCart();
 
   const navigate = useNavigate();
 
@@ -52,6 +54,7 @@ function LoginForm() {
       };
 
       login(userData);
+      initializeCart(userData.id);
 
       navigate('/');
     } catch (error) {
@@ -67,9 +70,8 @@ function LoginForm() {
   return (
     <div className="w-screen h-screen flex justify-center items-center">
       <Card className="flex-col items-center p-8 border border-gray-300 shadow-md w-1/3">
-        <div>
-          <p className="text-4xl font-normal mb-4">Login</p>
-        </div>
+        <p className="text-4xl font-normal mb-4">Login</p>
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             label="Email"
@@ -93,12 +95,14 @@ function LoginForm() {
             fullWidth
             margin="normal"
           />
-          <button
-            type="submit"
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Login
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded "
+            >
+              Login
+            </button>
+          </div>
         </form>
         <div className="mt-4">
           Create account{' '}
