@@ -55,7 +55,7 @@ function Register() {
         address: formData.profile.address,
       };
 
-      const { data: profile, error: profileError } = await supabase
+      const { error: profileError } = await supabase
         .from('Profile')
         .insert(profileData)
         .single();
@@ -64,10 +64,13 @@ function Register() {
         throw new Error(profileError.message);
       }
 
-      // making sure there is profile
-      if (profile) {
+      Swal.fire({
+        title: 'Registration Success!',
+        icon: 'success',
+        confirmButtonText: 'confirm',
+      }).then(() => {
         navigate('/login');
-      }
+      });
     } catch (error) {
       Swal.fire({
         title: 'Registration Error!',
@@ -117,31 +120,6 @@ function Register() {
               )}
             </div>
           </div>
-
-          <TextField
-            label="Phone"
-            variant="outlined"
-            type="text"
-            fullWidth
-            margin="normal"
-            inputProps={{ ...register('profile.phone', { required: true }) }}
-          />
-          {errors?.profile?.phone && (
-            <span className="text-red-400 text-xs">Phone no is required</span>
-          )}
-
-          <TextField
-            label="Address"
-            variant="outlined"
-            type="text"
-            fullWidth
-            margin="normal"
-            inputProps={{ ...register('profile.address', { required: true }) }}
-          />
-          {errors?.profile?.address && (
-            <span className="text-red-400 text-xs">Address is required</span>
-          )}
-
           <TextField
             label="Email"
             variant="outlined"
@@ -167,6 +145,30 @@ function Register() {
           />
           {errors?.credentials?.password && (
             <span className="text-red-400 text-xs">Password is required</span>
+          )}
+
+          <TextField
+            label="Phone"
+            variant="outlined"
+            type="text"
+            fullWidth
+            margin="normal"
+            inputProps={{ ...register('profile.phone', { required: true }) }}
+          />
+          {errors?.profile?.phone && (
+            <span className="text-red-400 text-xs">Phone no is required</span>
+          )}
+
+          <TextField
+            label="Address"
+            variant="outlined"
+            type="text"
+            fullWidth
+            margin="normal"
+            inputProps={{ ...register('profile.address', { required: true }) }}
+          />
+          {errors?.profile?.address && (
+            <span className="text-red-400 text-xs">Address is required</span>
           )}
 
           <div className="flex justify-center">

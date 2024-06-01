@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
@@ -11,8 +10,6 @@ import { useProfileById, useUpdateProfile } from '../../hooks/useProfile';
 import useUserStore from '../../hooks/useUser';
 
 function ProfilePage() {
-  const navigate = useNavigate();
-
   const { user } = useUserStore();
   // Fetch profile data by ID
   const { data: profileData, isLoading: profileLoading } = useProfileById(
@@ -37,7 +34,6 @@ function ProfilePage() {
         icon: 'success',
         confirmButtonText: 'Confirm',
       });
-      navigate('/');
     } else {
       Swal.fire({
         title: 'Profile Update Error!',
@@ -65,23 +61,34 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('first_name') }}
+              defaultValue={profileData?.first_name || ''}
+              inputProps={{
+                ...register('first_name'),
+              }}
             />
+
             <TextField
               fullWidth
               label="Last Name"
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('last_name') }}
+              defaultValue={profileData.last_name || ''}
+              inputProps={{
+                ...register('last_name'),
+              }}
             />
+
             <TextField
               fullWidth
               label="Phone"
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('phone') }}
+              defaultValue={profileData?.phone || ''}
+              inputProps={{
+                ...register('phone'),
+              }}
             />
             <TextField
               fullWidth
@@ -89,7 +96,10 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('address') }}
+              defaultValue={profileData?.address || ''}
+              inputProps={{
+                ...register('address'),
+              }}
             />
             <div className="flex justify-center">
               <Button
