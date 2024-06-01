@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import Swal from 'sweetalert2';
 import { UserState, CartState, Product } from '../interface/types';
 import OrderService from '../services/OrderService'; // Import the OrderService
 
@@ -41,7 +42,12 @@ const useCart = create<CartState>((set) => ({
         'Added',
       );
     } catch (error) {
-      console.error('Error adding product to cart:', error.message);
+      Swal.fire({
+        title: 'Add Cart Error!',
+        text: 'Error adding product to cart. Please come back later',
+        icon: 'error',
+        confirmButtonText: 'Confirm',
+      });
     }
   },
   removeCart: async (productId) => {
