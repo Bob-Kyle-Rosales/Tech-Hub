@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
@@ -11,8 +10,6 @@ import { useProfileById, useUpdateProfile } from '../../hooks/useProfile';
 import useUserStore from '../../hooks/useUser';
 
 function ProfilePage() {
-  const navigate = useNavigate();
-
   const { user } = useUserStore();
   // Fetch profile data by ID
   const { data: profileData, isLoading: profileLoading } = useProfileById(
@@ -37,7 +34,6 @@ function ProfilePage() {
         icon: 'success',
         confirmButtonText: 'Confirm',
       });
-      navigate('/');
     } else {
       Swal.fire({
         title: 'Profile Update Error!',
@@ -65,30 +61,32 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
+              defaultValue={profileData?.first_name || ''}
               inputProps={{
-                defaultValue: profileData?.first_name,
                 ...register('first_name'),
               }}
             />
+
             <TextField
               fullWidth
               label="Last Name"
               variant="outlined"
               margin="normal"
               className="mb-4"
+              defaultValue={profileData.last_name || ''}
               inputProps={{
-                defaultValue: profileData?.last_name,
                 ...register('last_name'),
               }}
             />
+
             <TextField
               fullWidth
               label="Phone"
               variant="outlined"
               margin="normal"
               className="mb-4"
+              defaultValue={profileData?.phone || ''}
               inputProps={{
-                defaultValue: profileData?.phone,
                 ...register('phone'),
               }}
             />
@@ -98,8 +96,8 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
+              defaultValue={profileData?.address || ''}
               inputProps={{
-                defaultValue: profileData?.address,
                 ...register('address'),
               }}
             />
