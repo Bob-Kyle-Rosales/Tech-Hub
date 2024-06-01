@@ -65,7 +65,10 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('first_name') }}
+              inputProps={{
+                defaultValue: profileData?.first_name,
+                ...register('first_name'),
+              }}
             />
             <TextField
               fullWidth
@@ -73,7 +76,10 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('last_name') }}
+              inputProps={{
+                defaultValue: profileData?.last_name,
+                ...register('last_name'),
+              }}
             />
             <TextField
               fullWidth
@@ -81,7 +87,10 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('phone') }}
+              inputProps={{
+                defaultValue: profileData?.phone,
+                ...register('phone'),
+              }}
             />
             <TextField
               fullWidth
@@ -89,7 +98,10 @@ function ProfilePage() {
               variant="outlined"
               margin="normal"
               className="mb-4"
-              inputProps={{ ...register('address') }}
+              inputProps={{
+                defaultValue: profileData?.address,
+                ...register('address'),
+              }}
             />
             <div className="flex justify-center">
               <Button
