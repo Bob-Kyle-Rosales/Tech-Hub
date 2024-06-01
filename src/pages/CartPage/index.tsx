@@ -12,13 +12,13 @@ function CartPage() {
         {cart.map((product) => (
           <Card
             key={product.id}
-            className="mx-10 my-5 border border-gray-300 shadow-md w-11/12"
+            className="mx-5 my-5 border border-gray-300 shadow-md w-11/12"
           >
             <div className="flex w-full ml-10">
               <img
                 src={product.thumbnail}
                 alt={product.name}
-                className="h-40 w-40 rounded-lg mr-4"
+                className="h-40 w-40 rounded-lg"
               />
               <div className="mx-10">
                 <p className="text-3xl font-normal">{product.name}</p>
@@ -59,7 +59,7 @@ function CartPage() {
       <Card className="flex flex-col items-center justify-center border border-gray-300 shadow-md w-1/2">
         <p className="text-4xl font-normal mb-2">Your Cart</p>
 
-        <div className="m-4 w-full  ">
+        <div className="my-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
           {cart.length > 0 ? renderCartList() : noCartMessage()}
         </div>
       </Card>
