@@ -17,6 +17,8 @@ import {
 import Badge, { BadgeProps } from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import useCart from '../../hooks/useCart';
 import useUserStore from '../../hooks/useUser';
@@ -72,7 +74,7 @@ function NavBar() {
     logout();
     clearCart();
     setAnchorEl(null);
-    navigate('/');
+    navigate('/login');
   };
 
   const renderNavLinks = () => (
@@ -169,11 +171,28 @@ function NavBar() {
       open={Boolean(anchorEl)}
       onClose={handleAccountClose}
       style={{
-        marginLeft: '-40px', // Move the menu to the left
+        marginLeft: '-70px', // Move the menu to the left
       }}
     >
-      <MenuItem onClick={handleProfile}>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <MenuItem
+        style={{
+          width: '8rem',
+          borderBottom: '1px solid #C5C6D0',
+        }}
+        onClick={handleProfile}
+      >
+        <PersonOutlineIcon style={{ color: 'black', marginRight: '10px' }} />
+        Profile
+      </MenuItem>
+      <MenuItem
+        style={{
+          width: '8rem',
+        }}
+        onClick={handleLogout}
+      >
+        <LogoutIcon style={{ color: 'black', marginRight: '10px' }} />
+        Logout
+      </MenuItem>
     </Menu>
   );
 
