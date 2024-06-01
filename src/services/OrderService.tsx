@@ -12,6 +12,7 @@ const OrderService = {
       },
     ]);
     if (error) {
+      console.error(`Error creating order: ${error.message}`);
       throw new Error(`Error creating order: ${error.message}`);
     }
     return data ? data[0] : null;
@@ -24,18 +25,20 @@ const OrderService = {
       .select('*')
       .eq('user_id', userId);
     if (error) {
+      console.error(`Error fetching orders: ${error.message}`);
       throw new Error(`Error fetching orders: ${error.message}`);
     }
     return data || [];
   },
 
   // Function to update an order by ID
-  updateOrder: async (orderId: number, updates: Order) => {
+  updateOrder: async (orderId: number, updates: Partial<Order>) => {
     const { data, error } = await supabase
       .from('Order')
       .update(updates)
       .eq('id', orderId);
     if (error) {
+      console.error(`Error updating order: ${error.message}`);
       throw new Error(`Error updating order: ${error.message}`);
     }
     return data ? data[0] : null;
@@ -45,6 +48,7 @@ const OrderService = {
   deleteOrder: async (orderId: number) => {
     const { error } = await supabase.from('Order').delete().eq('id', orderId);
     if (error) {
+      console.error(`Error deleting order: ${error.message}`);
       throw new Error(`Error deleting order: ${error.message}`);
     }
     return true;

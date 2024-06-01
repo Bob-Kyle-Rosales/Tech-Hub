@@ -1,12 +1,16 @@
 // User interface
+
+// will be used for profile
 export interface User {
   id: string;
   first_name: string;
   last_name: string;
-  email: string;
+  phone: string;
   address: string;
 }
-// very simply user auth
+
+// very simple user for auth/security reasons
+// will be used for navbar
 export interface UserLogin {
   id: string;
   email: string;
@@ -16,6 +20,7 @@ export interface UserState {
   user: UserLogin | null;
   login: (user: UserLogin) => void;
   logout: () => void;
+  isAuthenticated: boolean;
 }
 
 // Device List interface
@@ -34,6 +39,7 @@ export interface DeviceListProps {
 // Cart related interface
 export interface Product {
   id: string;
+  orderid: number;
   name: string;
   thumbnail: string;
   color: string;
@@ -44,8 +50,9 @@ export interface Product {
 
 export interface CartState {
   cart: Product[];
-  addCart: (product: Product, user: UserState) => void;
-  removeCart: (productId: string, user: UserState) => void;
+  addCart: (product: Product, user: UserLogin) => Promise<void>;
+  removeCart: (productRem: Product) => Promise<void>;
+  initializeCart: (userId: string) => Promise<void>;
   clearCart: () => void;
 }
 
