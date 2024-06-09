@@ -1,11 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, TextField } from '@mui/material';
-
 import Swal from 'sweetalert2';
 import Card from '../../components/Card';
-
 import { RegisterSchema } from '../../models/User';
 import supabase from '../../config/supabaseClient';
 
@@ -29,12 +27,13 @@ function Register() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    resolver: zodResolver(RegisterSchema),
+  });
 
   const onSubmit = async (formData: FormData) => {
     try {
-      RegisterSchema.parse(formData);
-
+      // Zod validation is handled by the resolver, no need to manually validate here
       const { email, password } = formData.credentials;
 
       const { data, error } = await supabase.auth.signUp({
@@ -46,7 +45,6 @@ function Register() {
         throw new Error(error.message);
       }
 
-      // Now that the user is registered, insert the profile information into the Profile table
       const profileData = {
         id: data.user?.id,
         first_name: formData.profile.first_name,
@@ -67,14 +65,14 @@ function Register() {
       Swal.fire({
         title: 'Registration Success!',
         icon: 'success',
-        confirmButtonText: 'confirm',
+        confirmButtonText: 'Confirm',
       }).then(() => {
         navigate('/login');
       });
     } catch (error) {
       Swal.fire({
         title: 'Registration Error!',
-        text: 'There seems to be an error. Come back later',
+        text: `There seems to be an error. ${error}.`,
         icon: 'error',
         confirmButtonText: 'Okay',
       });
@@ -94,12 +92,12 @@ function Register() {
                 fullWidth
                 margin="normal"
                 inputProps={{
-                  ...register('profile.first_name', { required: true }),
+                  ...register('profile.first_name'),
                 }}
               />
               {errors?.profile?.first_name && (
                 <span className="text-red-400 text-xs">
-                  First Name is required
+                  {errors.profile.first_name.message}
                 </span>
               )}
             </div>
@@ -110,12 +108,12 @@ function Register() {
                 fullWidth
                 margin="normal"
                 inputProps={{
-                  ...register('profile.last_name', { required: true }),
+                  ...register('profile.last_name'),
                 }}
               />
               {errors?.profile?.last_name && (
                 <span className="text-red-400 text-xs">
-                  Last Name is required
+                  {errors.profile.last_name.message}
                 </span>
               )}
             </div>
@@ -127,11 +125,13 @@ function Register() {
             fullWidth
             margin="normal"
             inputProps={{
-              ...register('credentials.email', { required: true }),
+              ...register('credentials.email'),
             }}
           />
           {errors?.credentials?.email && (
-            <span className="text-red-400 text-xs">Email is required</span>
+            <span className="text-red-400 text-xs">
+              {errors.credentials.email.message}
+            </span>
           )}
           <TextField
             label="Password"
@@ -140,37 +140,40 @@ function Register() {
             fullWidth
             margin="normal"
             inputProps={{
-              ...register('credentials.password', { required: true }),
+              ...register('credentials.password'),
             }}
           />
           {errors?.credentials?.password && (
-            <span className="text-red-400 text-xs">Password is required</span>
+            <span className="text-red-400 text-xs">
+              {errors.credentials.password.message}
+            </span>
           )}
-
           <TextField
             label="Phone"
             variant="outlined"
             type="text"
             fullWidth
             margin="normal"
-            inputProps={{ ...register('profile.phone', { required: true }) }}
+            inputProps={{ ...register('profile.phone') }}
           />
           {errors?.profile?.phone && (
-            <span className="text-red-400 text-xs">Phone no is required</span>
+            <span className="text-red-400 text-xs">
+              {errors.profile.phone.message}
+            </span>
           )}
-
           <TextField
             label="Address"
             variant="outlined"
             type="text"
             fullWidth
             margin="normal"
-            inputProps={{ ...register('profile.address', { required: true }) }}
+            inputProps={{ ...register('profile.address') }}
           />
           {errors?.profile?.address && (
-            <span className="text-red-400 text-xs">Address is required</span>
+            <span className="text-red-400 text-xs">
+              {errors.profile.address.message}
+            </span>
           )}
-
           <div className="flex justify-center">
             <Button type="submit" variant="contained">
               Register
